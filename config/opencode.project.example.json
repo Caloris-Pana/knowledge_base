@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "skill": {
+      "code-review": "ask",
+      "knowledge-base": "allow"
+    }
+  },
+  "mcp": {
+    "knowledge-base": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\TMS_dev\\knowledge_base\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\admin\\Desktop\\TMS_dev\\knowledge_base\\kb_server.py"
+      ],
+      "timeout": 60000
+    }
+  }
+}

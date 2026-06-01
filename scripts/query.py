@@ -58,7 +58,14 @@ def search_solutions(query: str, top_k: int = 5) -> list[dict]:
     return output
 
 
+def knowledge_base_exists() -> bool:
+    return os.path.isdir(CHROMA_DIR)
+
+
 def list_solutions(limit: int = 20, offset: int = 0) -> dict:
+    if not knowledge_base_exists():
+        return {"total": 0, "records": [], "kb_not_found": True}
+
     collection = get_collection()
     total = collection.count()
     if total == 0:
