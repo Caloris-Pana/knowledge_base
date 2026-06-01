@@ -27,6 +27,22 @@ Persist a new problem-solution pair. Must only be called after user confirms via
 | `cause` | `str` | Root cause of the problem (e.g. "USB power insufficient, xda daemon cannot enumerate device") |
 | `detail` | `str` | Full error message, reproduction steps, extra notes |
 
+### `delete_solution(entry_id)`
+
+Delete a record by ID. Direct operation, no confirmation required.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `entry_id` | `str` | Record ID to delete |
+
+### `list_solutions(limit=20, offset=0)`
+
+View all records with summary. Returns `{total, records[]}`. Each record includes `order` and `problem`.
+
+### `get_solution(entry_id)`
+
+View full detail of a single record. Returns all fields: `problem`, `cause`, `solution`, `tags`, `context`, `detail`, `timestamp`.
+
 ### `search_solutions(query, top_k=5)`
 
 Semantic search across the knowledge base. Returns top-K results with similarity score (cosine distance → 0%~100%).
@@ -81,6 +97,30 @@ This is the ONLY correct way to save data. The MCP tool itself writes ONLY to `c
 - **Distance metric**: cosine
 - **Data dir**: `knowledge_base/chroma_db/` (backup by copying this folder)
 
+## CLI Usage (maintenance)
+
+For maintenance tasks via terminal, use `cli.py` with JSON files to avoid PowerShell encoding issues:
+
+```bash
+# Save
+echo '{"problem":"...","solution":"...","tags":[]}' > record.json
+python cli.py save --file record.json
+
+# List
+python cli.py list
+
+# Get detail
+python cli.py get --id <entry_id>
+
+# Delete
+python cli.py delete --id <entry_id>
+
+# Search
+python cli.py search --file query.json
+```
+
+Set `HF_HUB_OFFLINE=1` to skip HuggingFace Hub check when offline.
+
 ## Agent Usage Examples
 
 | User says | Agent action |
@@ -88,3 +128,6 @@ This is the ONLY correct way to save data. The MCP tool itself writes ONLY to `c
 | "把这个问题的解法存到知识库" | Extract problem/solution from conversation → show via `question` with [确认存入/修改内容/取消] → if confirm, call `save_solution` |
 | "查一下之前 ZED 的问题怎么解决的" | Call `search_solutions("ZED ...")` → show results |
 | "把这个测试记录存到知识库" | Same workflow: preview → question → save_solution |
+| "查看知识库" | Call `list_solutions()` → show numbered list of problems |
+| "查看第 2 条详情" | Get ID from list → call `get_solution(id)` → show full content |
+| "删除第 3 条记录" | Get ID from list → call `delete_solution(id)` → confirm |

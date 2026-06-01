@@ -44,3 +44,9 @@ def add_solution(problem: str, solution: str, tags: list[str], context: str = ""
         ids=[entry_id],
     )
     return entry_id
+
+
+def delete_solution(entry_id: str) -> str:
+    collection = get_collection()
+    collection.delete(ids=[entry_id])
+    return entry_id
