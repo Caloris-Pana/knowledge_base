@@ -2,6 +2,18 @@
 
 A local semantic memory for AI agents (opencode). Stores problem-solution pairs persistently and retrieves them via semantic similarity search.
 
+See [`AGENTS.md`](AGENTS.md) for agent-specific guidelines when working in this repo.
+
+## Quick Start
+
+```bash
+git clone https://github.com/Caloris-Pana/knowledge_base.git
+cd knowledge_base
+python setup.py --yes
+```
+
+This installs dependencies, deploys the SKILL.md for agent guidance, generates the MCP config at `~/.config/opencode/opencode.jsonc`, and initializes the vector database. Run `python setup.py --help` for options.
+
 ## Architecture
 
 ```
