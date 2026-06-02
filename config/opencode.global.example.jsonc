@@ -4,8 +4,8 @@
     "knowledge-base": {
       "type": "local",
       "command": [
-        "C:\\Users\\admin\\Desktop\\TMS_dev\\knowledge_base\\.venv\\Scripts\\python.exe",
-        "C:\\Users\\admin\\Desktop\\TMS_dev\\knowledge_base\\kb_server.py"
+        "C:\\Users\\admin\\knowledge_base\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\admin\\knowledge_base\\kb_server.py"
       ],
       "timeout": 60000
     }

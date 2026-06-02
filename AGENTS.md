@@ -19,7 +19,7 @@ chroma_db/            — vector store data (gitignored)
 ## How it runs
 
 - **Not a web app.** Runs as `python kb_server.py` via opencode MCP stdio transport.
-- **Virtualenv** is at `../TMS_dev/knowledge_base/.venv/` (outside this repo). `.venv/` is gitignored.
+- **Virtualenv** is at `./.venv/` (in repo root). `.venv/` is gitignored.
 - **Python 3.14.4**, dependencies: chromadb, sentence-transformers, mcp (see `requirements.txt`).
 
 ## MCP tools (used via MCP, never bypassed)
@@ -56,4 +56,4 @@ All data via UTF-8 JSON files (PowerShell pipe encoding issue).
 - **No test/lint/build infrastructure** — no pytest, no ruff, no typecheck.
 - **`chroma_db/` is data, not code** — gitignored. Backup by copying the folder.
 - **Embedding model** (~80MB) downloads on first `get_model()` call. Set `HF_HUB_OFFLINE=1` to skip hub check when offline.
-- **Ubuntu WSL path**: `~/Desktop/TMS_dev/knowledge_base/chroma_db/` when accessed from WSL.
+- **WSL path**: `~/Desktop/knowledge_base/chroma_db/` when accessed from WSL.

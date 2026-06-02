@@ -74,9 +74,28 @@ def step_check_python(yes: bool, dry_run: bool) -> bool:
 
 
 def step_install_deps(yes: bool, dry_run: bool) -> bool:
+    uv_path = shutil.which("uv")
+    if uv_path:
+        return run(
+            [uv_path, "pip", "install", "-r", os.path.join(ROOT, "requirements.txt")],
+            "安装依赖 (via uv)",
+            dry_run,
+        )
+
+    pip_check = subprocess.run(
+        [sys.executable, "-m", "pip", "--version"],
+        capture_output=True, text=True,
+    )
+    if pip_check.returncode != 0:
+        print("  ✗  当前环境既无 uv 也无 pip，无法安装依赖")
+        print("      请执行以下任一命令后重试：")
+        print("        winget install uv    # Windows")
+        print("        pip install -r requirements.txt   # 先确保 pip 可用")
+        return False
+
     return run(
         [sys.executable, "-m", "pip", "install", "-r", os.path.join(ROOT, "requirements.txt")],
-        "安装依赖",
+        "安装依赖 (via pip)",
         dry_run,
     )
 
@@ -180,6 +199,25 @@ def step_init_kb(yes: bool, dry_run: bool) -> bool:
     return True
 
 
+def step_warmup_model(yes: bool, dry_run: bool) -> bool:
+    """预热嵌入模型，消除首次 save_solution / search_solutions 的延迟"""
+    if dry_run:
+        dry_info("预热嵌入模型 all-MiniLM-L6-v2")
+        return True
+
+    sys.path.insert(0, ROOT)
+    from scripts.model import get_model
+
+    try:
+        get_model()
+        info("嵌入模型预热完成")
+    except Exception as e:
+        warn(f"嵌入模型预热失败: {e}")
+        return True
+
+    return True
+
+
 # ── main ────────────────────────────────────────────────────────────────
 
 def main():
@@ -201,6 +239,7 @@ def main():
         ("部署 SKILL.md", step_deploy_skill),
         ("生成 MCP 配置", step_gen_mcp_config),
         ("初始化知识库", step_init_kb),
+        ("预热嵌入模型", step_warmup_model),
     ]
 
     ok = True
