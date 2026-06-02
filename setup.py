@@ -148,7 +148,7 @@ def step_gen_mcp_config(yes: bool, dry_run: bool) -> bool:
         config["$schema"] = "https://opencode.ai/config.json"
 
     python_path = sys.executable
-    script_path = os.path.join(ROOT, "kb_server.py")
+    script_path = os.path.join(ROOT, "src", "kb_server.py")
 
     knowledge_base_config = {
         "type": "local",
@@ -174,7 +174,7 @@ def step_gen_mcp_config(yes: bool, dry_run: bool) -> bool:
 
 def _show_mcp_preview():
     python_path = sys.executable
-    script_path = os.path.join(ROOT, "kb_server.py")
+    script_path = os.path.join(ROOT, "src", "kb_server.py")
     print(f"       Python: {python_path}")
     print(f"       Script: {script_path}")
 
