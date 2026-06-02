@@ -18,6 +18,29 @@ python setup.py --yes
 
 This installs dependencies, deploys `SKILL.md`, generates MCP config at `~/.config/opencode/opencode.jsonc`, and initializes the vector database. Run `python setup.py --help` for options.
 
+## Usage Example
+
+```
+User: "帮我查一下之前 ZED 相机初始化失败的问题是怎么解决的"
+
+Agent → search_solutions("ZED 相机初始化失败")
+      → 返回最匹配的记录
+
+结果示例:
+  问题: ZED 相机初始化失败，错误码 -1
+  原因: USB 供电不足导致 xda 守护进程无法枚举设备
+  方案: 1. 使用独立供电 USB 集线器
+       2. 或连接 Jetson 原生 USB 3.0 口
+       3. 拔插 USB 后运行 sudo zed_explorer
+```
+
+```
+User: "把刚才 Docker 时区不同步的解法存到知识库"
+
+Agent → 使用 question 工具展示预览 → 用户确认
+      → save_solution(...) 写入 chroma_db/
+```
+
 ## MCP Tools (used via opencode, never bypassed)
 
 | Tool | Description |
