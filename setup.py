@@ -15,10 +15,12 @@ import sys
 
 # ── paths ───────────────────────────────────────────────────────────────
 ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(ROOT)  # TMS_MS 项目根目录
 CHROMA_DIR = os.path.join(ROOT, "chroma_db")
 SKILL_SRC = os.path.join(ROOT, "config", "SKILL.md")
-SKILL_DST_DIR = os.path.join(ROOT, ".opencode", "skills", "knowledge-base")
+SKILL_DST_DIR = os.path.join(PROJECT_ROOT, ".opencode", "skills", "knowledge-base")
 SKILL_DST = os.path.join(SKILL_DST_DIR, "SKILL.md")
+SKILL_DIR_RELATIVE = ".opencode/skills"  # 相对项目根目录的 skill 搜索路径
 MCP_CONFIG_DIR = os.path.join(os.path.expanduser("~"), ".config", "opencode")
 MCP_CONFIG_PATH = os.path.join(MCP_CONFIG_DIR, "opencode.jsonc")
 
@@ -123,10 +125,24 @@ def step_deploy_skill(yes: bool, dry_run: bool) -> bool:
     return True
 
 
+def _ensure_skills_paths(config: dict):
+    """在 opencode 配置中注册 skill 搜索路径（若尚未存在）"""
+    skills_dir = os.path.join(PROJECT_ROOT, SKILL_DIR_RELATIVE)
+    if os.path.isdir(skills_dir):
+        rel = SKILL_DIR_RELATIVE.replace("\\", "/")
+        if "skills" not in config:
+            config["skills"] = {"paths": [rel]}
+        elif "paths" not in config["skills"]:
+            config["skills"]["paths"] = [rel]
+        elif rel not in config["skills"]["paths"]:
+            config["skills"]["paths"].append(rel)
+        info(f"注册 skill 搜索路径: {rel}")
+
+
 def step_gen_mcp_config(yes: bool, dry_run: bool) -> bool:
     if dry_run:
         dry_info("生成 ~/.config/opencode/opencode.jsonc")
-        _show_mcp_preview()
+        _show_gen_preview()
         return True
 
     os.makedirs(MCP_CONFIG_DIR, exist_ok=True)
@@ -163,20 +179,23 @@ def step_gen_mcp_config(yes: bool, dry_run: bool) -> bool:
         config["mcp"] = {}
     config["mcp"]["knowledge-base"] = knowledge_base_config
 
+    _ensure_skills_paths(config)
+
     with open(MCP_CONFIG_PATH, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
     info("生成 ~/.config/opencode/opencode.jsonc")
-    _show_mcp_preview()
+    _show_gen_preview()
     return True
 
 
-def _show_mcp_preview():
+def _show_gen_preview():
     python_path = sys.executable
     script_path = os.path.join(ROOT, "src", "kb_server.py")
     print(f"       Python: {python_path}")
     print(f"       Script: {script_path}")
+    print(f"       Skills path: {SKILL_DIR_RELATIVE}")
 
 
 def step_init_kb(yes: bool, dry_run: bool) -> bool:
