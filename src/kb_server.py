@@ -71,4 +71,11 @@ def get_solution(entry_id: str) -> dict | None:
 
 
 if __name__ == "__main__":
+    from scripts.model import get_model, is_model_cached
+    if is_model_cached():
+        print("Model found in cache, loading...", file=sys.stderr)
+        get_model()
+    else:
+        print("Model not cached. Run the following command to download it first:", file=sys.stderr)
+        print('  python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer(\'all-MiniLM-L6-v2\')"', file=sys.stderr)
     mcp.run(transport="stdio")
