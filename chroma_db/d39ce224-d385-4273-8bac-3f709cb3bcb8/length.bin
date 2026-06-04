@@ -1,0 +1,1 @@
+invalid type: string "用户外接的 2TB SATA SSD（/dev/sda1）格式为 exFAT，在 Jetson 上无法打开，报错 Error mounting /dev/sda1: unknown filesystem type 'exfat'。安装 exfat-fuse 和 exfatprogs 后重新挂载即可解决。exFAT 不支持 Linux 权限系统，需在挂载时通过 uid/gid/umask 参数设置写入权限。拔硬盘前需先 sudo umount 以防数据损坏。f`�j�b
